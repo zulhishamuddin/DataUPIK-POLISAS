@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard DataUPIK POLISAS</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;font-size:14px;line-height:1.5;background:#f8fafc;color:#1e293b;overflow:hidden;height:100vh}
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+/* ── Top Navbar ── */
+.topnav{background:#fff;border-bottom:1px solid #e2e8f0;z-index:30;flex-shrink:0}
+.topnav-row{display:flex;align-items:center;height:52px;padding:0 16px;gap:12px}
+.topnav-search{padding:6px 16px;border-bottom:1px solid #e2e8f0}
+.topnav-search input{width:100%;padding:6px 12px 6px 34px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#f8fafc;outline:none;transition:.15s}
+.topnav-search input:focus{border-color:#3b82f6;background:#fff;box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+.search-wrap{position:relative}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;pointer-events:none}
+.body-row{display:flex;flex:1;overflow:hidden}
+/* ── Sidebar ── */
+.sidebar{width:224px;min-width:224px;background:#fafafa;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;transition:width .2s;overflow:hidden;flex-shrink:0}
+.sidebar.collapsed{width:52px;min-width:52px}
+.sidebar-logo{display:flex;align-items:center;gap:10px;padding:12px;border-bottom:1px solid #e2e8f0;height:52px;flex-shrink:0}
+.logo-box{width:30px;height:30px;border-radius:8px;background:#3b82f6;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
+.logo-text{font-weight:600;font-size:13px;color:#1e293b;white-space:nowrap;line-height:1.3}
+.sidebar nav{flex:1;overflow-y:auto;padding:8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:500;color:#475569;cursor:pointer;transition:.15s;white-space:nowrap;overflow:hidden;text-decoration:none;margin-bottom:2px}
+.nav-item:hover{background:#f1f5f9;color:#1e293b}
+.nav-item.active{background:#3b82f6;color:#fff}
+.nav-item svg{flex-shrink:0}
+.nav-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+.nav-section{padding:4px 10px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
+.sidebar-footer{border-top:1px solid #e2e8f0;padding:8px;flex-shrink:0}
+.sidebar-user{padding:6px 10px;margin-bottom:4px}
+.sidebar-user .u-name{font-size:12px;font-weight:600;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-user .u-dept{font-size:11px;color:#94a3b8}
+.logout-btn{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;font-size:13px;color:#94a3b8;cursor:pointer;transition:.15s;width:100%;border:none;background:none}
+.logout-btn:hover{background:#fee2e2;color:#ef4444}
+/* ── Sidebar collapsed states ── */
+.sidebar.collapsed .nav-label,.sidebar.collapsed .logo-text,.sidebar.collapsed .sidebar-user,.sidebar.collapsed .nav-section{display:none}
+.sidebar.collapsed .sidebar-logo{justify-content:center}
+.sidebar.collapsed .nav-item{justify-content:center;padding:9px}
+.sidebar.collapsed .logout-btn{justify-content:center;padding:9px}
+/* ── Main ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.alert-banner{background:#eff6ff;border-bottom:1px solid #bfdbfe;padding:7px 16px;font-size:12px;color:#1d4ed8;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.page-content{flex:1;overflow-y:auto;padding:20px 24px 80px}
+/* ── Topnav items ── */
+.hamburger{width:32px;height:32px;border:none;background:none;cursor:pointer;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#64748b;flex-shrink:0}
+.hamburger:hover{background:#f1f5f9}
+.app-logo-row{display:flex;align-items:center;gap:8px;margin-right:auto}
+.app-logo-box{width:28px;height:28px;border-radius:7px;background:#3b82f6;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
+.app-title{font-weight:600;font-size:13px;color:#1e293b}
+.nav-right{display:flex;align-items:center;gap:8px}
+.icon-btn{width:32px;height:32px;border:none;background:none;cursor:pointer;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#64748b;position:relative}
+.icon-btn:hover{background:#f1f5f9}
+.notif-dot::after{content:'';position:absolute;top:6px;right:6px;width:7px;height:7px;background:#ef4444;border-radius:50%;border:2px solid #fff}
+.user-chip{display:flex;align-items:center;gap:8px;padding-left:10px;border-left:1px solid #e2e8f0}
+.avatar{width:30px;height:30px;border-radius:50%;background:#3b82f6;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.user-info .name{font-size:12px;font-weight:600;color:#1e293b}
+.user-info .dept{font-size:11px;color:#94a3b8}
+.role-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;background:#d1fae5;color:#065f46}
+/* ── Stat cards ── */
+.stat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px}
+.stat-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.stat-value{font-size:22px;font-weight:700;color:#1e293b;line-height:1}
+.stat-label{font-size:11px;color:#94a3b8;margin-top:4px}
+/* ── Charts ── */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.chart-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px}
+.chart-title{font-size:13px;font-weight:600;color:#1e293b;margin-bottom:12px}
+/* ── Table card ── */
+.table-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden}
+/* ── Tabs ── */
+.tabs-row{display:flex;gap:4px;padding:10px 12px;border-bottom:1px solid #e2e8f0;overflow-x:auto}
+.tab-btn{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:500;border:none;cursor:pointer;background:none;color:#64748b;white-space:nowrap;transition:.15s}
+.tab-btn:hover{background:#f1f5f9;color:#1e293b}
+.tab-btn.active{background:#3b82f6;color:#fff}
+/* ── Filter bar ── */
+.filter-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #e2e8f0}
+.filter-label{font-size:12px;color:#94a3b8;font-weight:500}
+.filter-select{font-size:12px;border:1px solid #e2e8f0;border-radius:8px;padding:5px 10px;background:#fff;cursor:pointer;outline:none;color:#1e293b}
+.filter-select:focus{border-color:#3b82f6}
+.chip{display:inline-flex;align-items:center;gap:5px;background:#eff6ff;color:#3b82f6;font-size:11px;padding:3px 8px;border-radius:999px}
+.chip button{background:none;border:none;cursor:pointer;color:#3b82f6;font-size:13px;line-height:1;padding:0}
+.reset-btn{margin-left:auto;font-size:12px;color:#94a3b8;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px}
+.reset-btn:hover{color:#ef4444;background:#fee2e2}
+/* ── Data Table ── */
+.data-table{width:100%;border-collapse:collapse}
+.data-table thead tr{background:#f8fafc;border-bottom:1px solid #e2e8f0}
+.data-table th{text-align:left;padding:10px 16px;font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.data-table tbody tr{border-bottom:1px solid #f1f5f9;cursor:pointer;transition:.1s}
+.data-table tbody tr:hover{background:#f8fafc}
+.data-table td{padding:9px 16px;font-size:12px;color:#334155}
+.data-table td p{overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin:0}
+.table-footer{padding:10px 16px;font-size:12px;color:#94a3b8;border-top:1px solid #f1f5f9}
+/* ── Badges ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:500;white-space:nowrap}
+.badge-blue{background:#dbeafe;color:#1d4ed8}
+.badge-purple{background:#ede9fe;color:#7c3aed}
+.badge-amber{background:#fef3c7;color:#b45309}
+.badge-green{background:#d1fae5;color:#065f46}
+.badge-rose{background:#ffe4e6;color:#be123c}
+.badge-teal{background:#ccfbf1;color:#0f766e}
+.badge-gray{background:#f1f5f9;color:#64748b}
+/* ── Bottom bar ── */
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;padding:8px 16px;display:flex;align-items:center;gap:8px;z-index:25}
+.btn-primary{display:flex;align-items:center;gap:6px;padding:7px 16px;background:#3b82f6;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer}
+.btn-primary:hover{background:#2563eb}
+.btn-outline{display:flex;align-items:center;gap:6px;padding:7px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;color:#475569}
+.btn-outline:hover{background:#f8fafc}
+/* ── Right Drawer ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.18);z-index:40;display:none}
+.overlay.open{display:block}
+.drawer{position:fixed;top:0;right:0;height:100%;width:420px;max-width:95vw;background:#fff;border-left:1px solid #e2e8f0;box-shadow:-4px 0 24px rgba(0,0,0,.08);z-index:50;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .2s ease}
+.drawer.open{transform:translateX(0)}
+.drawer-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #e2e8f0;flex-shrink:0}
+.drawer-header h3{font-size:14px;font-weight:600}
+.drawer-header p{font-size:12px;color:#94a3b8;margin-top:1px}
+.drawer-close{width:28px;height:28px;border:none;background:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#64748b;font-size:16px}
+.drawer-close:hover{background:#f1f5f9}
+.drawer-body{flex:1;overflow-y:auto;padding:18px}
+.drawer-field{margin-bottom:14px}
+.field-label{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+.field-value{font-size:13px;color:#1e293b;line-height:1.55;word-break:break-word}
+.field-link{color:#3b82f6;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.field-link:hover{text-decoration:underline}
+.drawer-footer{flex-shrink:0;padding:12px 18px;border-top:1px solid #e2e8f0}
+.drawer-footer button{width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;cursor:pointer;color:#475569}
+.drawer-footer button:hover{background:#f8fafc}
+/* ── Page header ── */
+.page-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.page-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.page-header h1{font-size:17px;font-weight:700}
+.page-header p{font-size:13px;color:#94a3b8;margin-top:2px}
+/* ── Mini stat strip ── */
+.mini-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.mini-stat{border:1px solid;border-radius:10px;padding:12px}
+.mini-stat-val{font-size:20px;font-weight:700;line-height:1}
+.mini-stat-lbl{font-size:11px;opacity:.75;margin-top:3px}
+/* ── Bar chart ── */
+.bar-chart{display:flex;align-items:flex-end;gap:4px;height:85px;padding:0 2px}
+.bar-group{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
+.bar-stack{display:flex;flex-direction:column-reverse;gap:1px;flex:1;align-items:stretch;width:100%}
+.bar-seg{border-radius:3px 3px 0 0;width:100%}
+.bar-lbl{font-size:9px;color:#94a3b8;font-weight:600}
+.chart-legend{display:flex;gap:14px;margin-top:8px;font-size:10px;color:#64748b}
+.legend-dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:middle}
+/* ── Donut ── */
+.donut-wrap{display:flex;align-items:center;gap:16px}
+.donut-legend{font-size:11px;color:#64748b;line-height:2}
+.donut-legend span{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}
+/* ── H-bar ── */
+.hbar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.hbar-name{width:130px;font-size:10px;color:#64748b;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
+.hbar-bg{flex:1;background:#f1f5f9;border-radius:4px;height:13px;overflow:hidden}
+.hbar-fill{height:100%;border-radius:4px}
+.hbar-val{width:36px;font-size:10px;color:#64748b;text-align:right;flex-shrink:0}
+/* ── Line chart ── */
+.line-chart-wrap svg{width:100%;height:90px}
+/* ── Empty state ── */
+.empty-state{text-align:center;padding:48px;color:#94a3b8}
+/* ── Toast ── */
+.toast{position:fixed;bottom:68px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;color:#fff;padding:8px 18px;border-radius:8px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:4px}::-webkit-scrollbar-thumb:hover{background:#cbd5e1}
+/* ── Divider ── */
+.nav-divider{height:1px;background:#e2e8f0;margin:6px 4px}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOP NAVBAR -->
+  <div class="topnav">
+    <div class="topnav-row">
+      <button class="hamburger" onclick="toggleSidebar()" title="Toggle sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="app-logo-row">
+        <div class="app-logo-box">UP</div>
+        <span class="app-title">DataUPIK POLISAS</span>
+      </div>
+      <div class="nav-right">
+        <button class="icon-btn notif-dot" title="Notifikasi">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </button>
+        <div class="user-chip">
+          <div class="avatar">ZA</div>
+          <div class="user-info">
+            <div class="name">Dr. Zulhishamuddin</div>
+            <div class="dept">Ketua UPIK · JKM</div>
+          </div>
+          <span class="role-badge">ADMIN</span>
+        </div>
+      </div>
+    </div>
+    <div class="topnav-search">
+      <div class="search-wrap">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Cari rekod — tajuk, nama penyelidik, UID merentasi semua modul..." oninput="handleSearch(this.value)" />
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY ROW -->
+  <div class="body-row">
+
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-box">UP</div>
+        <span class="logo-text">DataUPIK<br>POLISAS</span>
+      </div>
+      <nav id="sidebar-nav">
+        <a class="nav-item active" onclick="navigate('dashboard',this);return false" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span class="nav-label">Dashboard</span></a>
+        <a class="nav-item" onclick="navigate('research',this);return false" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/></svg><span class="nav-label">Penyelidikan</span></a>
+        <a class="nav-item" onclick="navigate('development',this);return false" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg><span class="nav-label">Inovasi &amp; Pembangunan</span></a>
+        <a class="nav-item" onclick="navigate('ip',this);return false" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="nav-label">IP &amp; Komersial</span></a>
+        <a class="nav-item" onclick="navigate('grant',this);return false" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><span class="nav-label">Geran</span></a>
+        <a class="nav-item" onclick="navigate('aset',this);return false" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg><span class="nav-label">Aset Tak Ketara</span></a>
+        <div class="nav-divider"></div>
+        <a class="nav-item" onclick="navigate('website',this);return false" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span class="nav-label">Laman Website UPIK</span></a>
+        <a class="nav-item" onclick="navigate('penyelaras',this);return false" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="nav-label">Penyelaras UPIK</span></a>
+        <a class="nav-item" onclick="navigate('rujukan',this);return false" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span class="nav-label">Rujukan &amp; Garis Panduan</span></a>
+        <a class="nav-item" onclick="navigate('permohonan',this);return false" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg><span class="nav-label">Permohonan Penyelidikan</span></a>
+        <a class="nav-item" onclick="navigate('profile',this);return false" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="nav-label">Profil Saya</span></a>
+        <div class="nav-divider"></div>
+        <div class="nav-section">Admin</div>
+        <a class="nav-item" onclick="navigate('admin',this);return false" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="nav-label">Admin Panel</span></a>
+        <a class="nav-item" onclick="navigate('users',this);return false" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="23" y2="17"/><line x1="20" y1="14" x2="26" y2="14"/></svg><span class="nav-label">Urus Pengguna</span></a>
+        <a class="nav-item" onclick="navigate('import',this);return false" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span class="nav-label">Import Data Excel</span></a>
+        <a class="nav-item" onclick="navigate('drive',this);return false" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span class="nav-label">Google Drive Folders</span></a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="u-name">Dr. Zulhishamuddin Bin Abd Rahman</div>
+          <div class="u-dept">Jabatan Kejuruteraan Mekanikal</div>
+        </div>
+        <button class="logout-btn" onclick="showToast('Log keluar...')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span class="nav-label">Log Keluar</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+      <div class="alert-banner">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Data mock sedang dipaparkan — sambungkan Supabase untuk data sebenar.
+      </div>
+      <div class="page-content" id="pageContent"></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM ACTION BAR -->
+  <div class="bottom-bar">
+    <button class="btn-primary" onclick="showToast('Form tambah rekod baharu akan dibuka')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Tambah Rekod Baru
+    </button>
+    <button class="btn-outline" onclick="showToast('Memuatkan semula data...')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      Refresh
+    </button>
+    <button class="btn-outline" onclick="showToast('Mengeksport data sebagai CSV...')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export CSV
+    </button>
+  </div>
+
+  <!-- RIGHT DRAWER -->
+  <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div><h3>Maklumat Lengkap</h3><p id="drawerModule">—</p></div>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+    <div class="drawer-footer"><button onclick="closeDrawer()">Tutup</button></div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+</div>
+
+<script>
+// ─── Data ────────────────────────────────────────────────────────────────────
+const BY_DEPT=[{d:'JKA',r:412,i:198,g:87},{d:'JKE',r:318,i:245,g:62},{d:'JKM',r:287,i:167,g:74},{d:'JTM',r:356,i:134,g:53},{d:'JP',r:241,i:89,g:41},{d:'JMSK',r:198,i:76,g:29},{d:'JPA',r:181,i:88,g:36}]
+const BY_YEAR=[{y:'2022',r:520,i:287,g:143},{y:'2023',r:481,i:312,g:198},{y:'2024',r:612,i:248,g:321},{y:'2025',r:380,i:150,g:230}]
+const SDG_DATA=[{n:'SDG 4 - Quality Education',v:320,c:'#3b82f6'},{n:'SDG 9 - Industry & Innovation',v:280,c:'#8b5cf6'},{n:'SDG 2 - Zero Hunger',v:210,c:'#f59e0b'},{n:'SDG 3 - Good Health',v:180,c:'#10b981'},{n:'SDG 11 - Sustainable Cities',v:145,c:'#06b6d4'},{n:'Lain-lain',v:858,c:'#e2e8f0'}]
+const DEPARTMENTS=['Jabatan Kejuruteraan Awam','Jabatan Kejuruteraan Elektrik','Jabatan Kejuruteraan Mekanikal','Jabatan Teknologi Makanan','Jabatan Perdagangan','Jabatan Matematik Sains dan Komputer','Jabatan Pengajian Am']
+const DEPT_MAP={JKA:'Jabatan Kejuruteraan Awam',JKE:'Jabatan Kejuruteraan Elektrik',JKM:'Jabatan Kejuruteraan Mekanikal',JTM:'Jabatan Teknologi Makanan',JP:'Jabatan Perdagangan',JMSK:'Jabatan Matematik Sains dan Komputer',JPA:'Jabatan Pengajian Am'}
+const SDG_LIST=['SDG 1 - No Poverty','SDG 2 - Zero Hunger','SDG 3 - Good Health and Well-Being','SDG 4 - Quality Education','SDG 5 - Gender Equality','SDG 6 - Clean Water and Sanitation','SDG 7 - Affordable and Clean Energy','SDG 8 - Decent Work and Economic Growth','SDG 9 - Industry, Innovation and Infrastructure','SDG 10 - Reduced Inequalities','SDG 11 - Sustainable Cities and Communities','SDG 12 - Responsible Consumption and Production','SDG 13 - Climate Action','SDG 14 - Life Below Water','SDG 15 - Life on Land','SDG 16 - Peace, Justice and Strong Institutions','SDG 17 - Partnerships for the Goals']
+const ALL_ROWS=[
+  {uid:'R1',mod:'Penyelidikan',title:'Pengurusan Maklumat Menggunakan Sistem e-Data Untuk Pengendalian Data-Data Sokongan Pengauditan Di JKA POLISAS',leader:'Muhamad Firdaus Bin Che Amat',dept:'JKA',year:'2022',type:'Innovation',level:'National',status:'Selesai',sdg:'—',publication:'e-Proceedings INNOPLEN 2022',issn:'eISBN 978-967-2766-24-2'},
+  {uid:'R39',mod:'Penyelidikan',title:'PERSONALITY QUALITIES AFFECT THE EMOTIONAL INTELLIGENCE OF UNIVERSITY STUDENTS',leader:'MOHAMMAD HAFEEZ MD RAMLI',dept:'JPA',year:'2023',type:'Research',level:'International',status:'Selesai',sdg:'—',publication:'WORLD YOUTH STUDIES CONGRESS-III',issn:'978-625-367-091-7'},
+  {uid:'R93',mod:'Penyelidikan',title:'The Influence of Plant-Based Binders on The Sensory Qualities of Chicken Meatballs',leader:'Nor Aishah Akmal bt A. Rahman',dept:'JTM',year:'2024',type:'Research',level:'International',status:'Selesai',sdg:'SDG 2 - Zero Hunger',publication:'E-PROCEEDING ICAFST 2024',issn:'e ISBN 978-967-2766-85-8'},
+  {uid:'R100',mod:'Penyelidikan',title:'Design and Development of a Seed Drilling Handle Machine',leader:'Zulhishamuddin Abd Rahman',dept:'JKM',year:'2024',type:'Research',level:'International',status:'Selesai',sdg:'—',publication:'E-PROCEEDING ICAFST 2024',issn:'e ISBN 978-967-2766-85-8'},
+  {uid:'R45',mod:'Penyelidikan',title:'PENGAPLIKASIAN TEKNOLOGI PERTANIAN PERSEKITARAN TERKAWAL (CEA) BAGI RUMAH CENDAWAN @ iMushRoom',leader:'FAUZIANNA BINTI AWANG',dept:'JKE',year:'2023',type:'Research',level:'National',status:'Selesai',sdg:'—',publication:'e-Proceeding INNOPLEN 2023',issn:'eISBN 978-967-2766-58-2'},
+  {uid:'D1',mod:'Inovasi',title:'Automatic Flowable Material Premix Assembly',leader:'Ts Mohd Syafarim Bin Md Ishak',dept:'JTM',year:'2022',type:'Innovation',level:'National',status:'Selesai',sdg:'—',pertandingan:'INNOPLEN 2022',pencapaian:'Gold Medal'},
+  {uid:'D8',mod:'Inovasi',title:'BREEZLER AS A SUSTAINABLE AIR-COOLING TOWER',leader:'Julia Binti Md. Tukiran',dept:'JKA',year:'2023',type:'Innovation',level:'National',status:'Selesai',sdg:'SDG 11 - Sustainable Cities',pertandingan:'INNOPLEN 2023',pencapaian:'Gold Medal'},
+  {uid:'D9',mod:'Inovasi',title:'E-SPKKP: Sistem Pengurusan Keselamatan & Kesihatan Pekerjaan',leader:'Yasmin Adlina Binti Mohd Yusoff',dept:'JP',year:'2025',type:'Innovation',level:'International',status:'Aktif',sdg:'SDG 3 - Good Health',pertandingan:'MTE 2025',pencapaian:'Gold Medal'},
+  {uid:'D11',mod:'Inovasi',title:'Ecobloom Bamboo Shelter Tower',leader:'Ts Dr Julia Binti Md. Tukiran',dept:'JKA',year:'2025',type:'Innovation',level:'International',status:'Aktif',sdg:'SDG 15 - Life on Land',pertandingan:'ITEX 2025',pencapaian:'Gold Medal'},
+  {uid:'IP5',mod:'IP & Komersial',title:'Sistem Aplikasi Mobil iMushRoom',leader:'Fauzianna Binti Awang',dept:'JKE',year:'2022',type:'Innovation',ip_type:'Hak Cipta',status:'Dikomersialkan',sdg:'—',reg_no:'KPT/POLISAS/HI/22/004',tarikh:'2022-12-19'},
+  {uid:'IP8',mod:'IP & Komersial',title:'iMushroom (Paten Utiliti)',leader:'Shaizan Bin Jusoh',dept:'JKE',year:'2024',type:'Innovation',ip_type:'Paten Utiliti',status:'Dikomersialkan',sdg:'—',reg_no:'KPT/JPPKK/POLISAS/HI/2024/005',tarikh:'2024-12-06'},
+  {uid:'IP9',mod:'IP & Komersial',title:'Sepak Takraw Automatic Ball Launcher (Reka Bentuk Industri)',leader:'Nik Mohd Haikal bin Mohamed Hassan',dept:'JKM',year:'2025',type:'Innovation',ip_type:'Reka Bentuk Industri',status:'Dalam Proses',sdg:'SDG 3 - Good Health',reg_no:'KPT/JPPKK/POLISAS/HI/25/004',tarikh:'2025-12-02'},
+  {uid:'IP10',mod:'IP & Komersial',title:'Ecobloom Bamboo Shelter Tower',leader:'Ts Dr Julia Binti Md. Tukiran',dept:'JKA',year:'2025',type:'Innovation',ip_type:'Hak Cipta',status:'Berdaftar',sdg:'SDG 15 - Life on Land',reg_no:'KPT/JPPKK/POLISAS/HI/25/001',tarikh:'2025-05-01'},
+  {uid:'G4',mod:'Geran',title:'iMushroom Smart Farming System',leader:'Shaizan Bin Jusoh',dept:'JKE',year:'2024',type:'Innovation',skim:'T4TVET',status:'Selesai',sdg:'—',jumlah:'RM 35,000',tempoh:'12 bulan'},
+  {uid:'G5',mod:'Geran',title:'Sepak Takraw Automatic Ball Launcher',leader:'Nik Mohd Haikal bin Mohamed Hassan',dept:'JKM',year:'2025',type:'Innovation',skim:'T4TVET',status:'Aktif',sdg:'SDG 3 - Good Health',jumlah:'RM 56,645',tempoh:'12 bulan'},
+  {uid:'G8',mod:'Geran',title:'Analisis Pemetaan Banjir Pahang 2023 (T-ARGS)',leader:'Dr. Noor Suhaiza Binti Sauti',dept:'JKA',year:'2023',type:'Research',skim:'T-ARGS',status:'Selesai',sdg:'SDG 13 - Climate Action',jumlah:'RM 15,000',tempoh:'12 bulan'},
+  {uid:'G9',mod:'Geran',title:'Pembangunan Struktur Menara Buluh Ecobloom Tower (T-AIGS)',leader:'Ts. Dr. Julia Binti Md. Tukiran',dept:'JKA',year:'2024',type:'Innovation',skim:'T-AIGS',status:'Aktif',sdg:'SDG 15 - Life on Land',jumlah:'RM 8,000',tempoh:'12 bulan'},
+  {uid:'ATK15',mod:'Aset',title:'iMushroom (Sistem Pertanian Pintar)',leader:'Shaizan Bin Jusoh',dept:'JKE',year:'2024',type:'Innovation',reg_no:'KPT/JPPKK/POLISAS/HI/2024/005',cara:'Geran Transfer Technology 4TVET',harga:'RM 35,000',nilai_semasa:'RM 35,000',status:'Berdaftar',sdg:'—'},
+  {uid:'ATK17',mod:'Aset',title:'Ecobloom Bamboo Shelter Tower',leader:'Ts Dr Julia Binti Md. Tukiran',dept:'JKA',year:'2025',type:'Innovation',reg_no:'KPT/JPPKK/POLISAS/HI/25/001',cara:'Pembiayaan Sendiri',harga:'RM 200',nilai_semasa:'RM 200',status:'Berdaftar',sdg:'SDG 15 - Life on Land'},
+  {uid:'ATK20',mod:'Aset',title:'Sepak Takraw Automatic Ball Launcher',leader:'Nik Mohd Haikal bin Mohamed Hassan',dept:'JKM',year:'2025',type:'Innovation',reg_no:'KPT/JPPKK/POLISAS/HI/25/003',cara:'Geran Transfer Technology 4TVET',harga:'RM 56,645',nilai_semasa:'RM 56,645',status:'Berdaftar',sdg:'—'},
+]
+const FIELD_LABELS={uid:'UID Rekod',mod:'Modul',title:'Tajuk',leader:'Ketua Penyelidik / Inovator',dept:'Jabatan',year:'Tahun',type:'Jenis',level:'Peringkat',status:'Status',sdg:'SDG (Matlamat Pembangunan Mampan)',publication:'Penerbitan / Prosiding',issn:'ISSN / ISBN',pertandingan:'Nama Pertandingan / Pameran',pencapaian:'Pencapaian / Anugerah',ip_type:'Jenis Perlindungan IP',reg_no:'No. Siri / Pendaftaran',tarikh:'Tarikh Pendaftaran',skim:'Skim Geran',jumlah:'Jumlah Geran',tempoh:'Tempoh Projek',cara:'Cara Perolehan',harga:'Harga Perolehan (RM)',nilai_semasa:'Anggaran Nilai Semasa (RM)'}
+
+// ─── State ───────────────────────────────────────────────────────────────────
+let sidebarCollapsed=false,currentPage='dashboard',activeTab='Semua',filterYear='',filterDept='',filterSdg='',searchQ=''
+
+// ─── Utils ───────────────────────────────────────────────────────────────────
+function toggleSidebar(){sidebarCollapsed=!sidebarCollapsed;document.getElementById('sidebar').classList.toggle('collapsed',sidebarCollapsed)}
+
+function navigate(page,el){
+  currentPage=page;activeTab='Semua';filterYear='';filterDept='';filterSdg=''
+  document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'))
+  if(el)el.classList.add('active')
+  renderPage()
+}
+
+let toastTimer
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show')
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2500)
+}
+
+function handleSearch(v){searchQ=v.toLowerCase();if(currentPage==='dashboard')renderTableSection()}
+
+function openDrawer(rowJson){
+  const row=typeof rowJson==='string'?JSON.parse(rowJson):rowJson
+  document.getElementById('drawerModule').textContent=row.mod||'—'
+  const body=document.getElementById('drawerBody')
+  body.innerHTML=Object.entries(row).map(([k,v])=>{
+    if(!v||v==='—'||v==='')return ''
+    const lbl=FIELD_LABELS[k]||k.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())
+    const isUrl=/^https?:\/\//.test(String(v))
+    const val=isUrl?`<a class="field-link" href="${v}" target="_blank">&#128279; Buka Pautan</a>`:`<div class="field-value">${v}</div>`
+    return `<div class="drawer-field"><div class="field-label">${lbl}</div>${val}</div>`
+  }).join('')
+  document.getElementById('overlay').classList.add('open')
+  document.getElementById('drawer').classList.add('open')
+}
+function closeDrawer(){document.getElementById('overlay').classList.remove('open');document.getElementById('drawer').classList.remove('open')}
+
+// ─── Filter helpers ───────────────────────────────────────────────────────────
+function setTab(t){activeTab=t;renderTableSection()}
+function setFilter(k,v){if(k==='year')filterYear=v;if(k==='dept')filterDept=v;if(k==='sdg')filterSdg=v;renderTableSection()}
+function resetFilters(){filterYear='';filterDept='';filterSdg='';document.querySelectorAll('.filter-select').forEach(s=>s.value='');renderTableSection()}
+
+function getFiltered(rows){
+  return rows.filter(r=>{
+    if(activeTab!=='Semua'&&r.mod!==activeTab)return false
+    if(filterYear&&r.year!==filterYear)return false
+    if(filterDept){const sh=Object.keys(DEPT_MAP).find(k=>DEPT_MAP[k]===filterDept);if(sh&&r.dept!==sh)return false}
+    if(filterSdg&&!r.sdg?.includes(filterSdg.split(' ').slice(0,2).join(' ')))return false
+    if(searchQ&&!r.title.toLowerCase().includes(searchQ)&&!r.leader.toLowerCase().includes(searchQ)&&!r.uid.toLowerCase().includes(searchQ))return false
+    return true
+  })
+}
+
+// ─── Badge helpers ────────────────────────────────────────────────────────────
+function modBadge(m){const map={Penyelidikan:'badge-blue',Inovasi:'badge-purple','IP & Komersial':'badge-amber',Geran:'badge-green',Aset:'badge-rose'};return`<span class="badge ${map[m]||'badge-gray'}">${m}</span>`}
+function typeBadge(t){return`<span class="badge ${t==='Research'?'badge-blue':t==='Innovation'?'badge-purple':'badge-gray'}">${t}</span>`}
+function statusBadge(s){const c=s==='Aktif'||s==='Dikomersialkan'?'badge-green':s==='Dalam Proses'?'badge-amber':'badge-gray';return`<span class="badge ${c}">${s}</span>`}
+
+// ─── Charts ───────────────────────────────────────────────────────────────────
+function barChart(){
+  const max=Math.max(...BY_DEPT.map(d=>d.r+d.i+d.g))
+  const bars=BY_DEPT.map(d=>{
+    const rh=Math.round(d.r/max*72),ih=Math.round(d.i/max*72),gh=Math.round(d.g/max*72)
+    return`<div class="bar-group"><div class="bar-stack"><div class="bar-seg" style="height:${rh}px;background:#3b82f6" title="Penyelidikan ${d.r}"></div><div class="bar-seg" style="height:${ih}px;background:#8b5cf6" title="Inovasi ${d.i}"></div><div class="bar-seg" style="height:${gh}px;background:#10b981" title="Geran ${d.g}"></div></div><div class="bar-lbl">${d.d}</div></div>`
+  }).join('')
+  return`<div class="bar-chart">${bars}</div><div class="chart-legend"><span><span class="legend-dot" style="background:#3b82f6"></span>Penyelidikan</span><span><span class="legend-dot" style="background:#8b5cf6"></span>Inovasi</span><span><span class="legend-dot" style="background:#10b981"></span>Geran</span></div>`
+}
+
+function lineChart(){
+  const W=280,H=80,pad=18,ipad=10
+  const maxV=Math.max(...BY_YEAR.flatMap(d=>[d.r,d.i,d.g]))
+  const line=(key,col)=>{
+    const pts=BY_YEAR.map((d,i)=>{const x=ipad+(i/(BY_YEAR.length-1))*(W-2*ipad);const y=H-pad-(d[key]/maxV)*(H-pad-4);return`${x.toFixed(1)},${y.toFixed(1)}`})
+    const circles=BY_YEAR.map((d,i)=>{const x=ipad+(i/(BY_YEAR.length-1))*(W-2*ipad);const y=H-pad-(d[key]/maxV)*(H-pad-4);return`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="${col}"/>`}).join('')
+    return`<polyline points="${pts.join(' ')}" fill="none" stroke="${col}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>${circles}`
+  }
+  const xlbls=BY_YEAR.map((d,i)=>{const x=ipad+(i/(BY_YEAR.length-1))*(W-2*ipad);return`<text x="${x.toFixed(1)}" y="${H-3}" text-anchor="middle" font-size="9" fill="#94a3b8">${d.y}</text>`}).join('')
+  return`<div class="line-chart-wrap"><svg viewBox="0 0 ${W} ${H}">${xlbls}${line('r','#3b82f6')}${line('i','#8b5cf6')}${line('g','#10b981')}</svg></div><div class="chart-legend"><span><span class="legend-dot" style="background:#3b82f6"></span>Penyelidikan</span><span><span class="legend-dot" style="background:#8b5cf6"></span>Inovasi</span><span><span class="legend-dot" style="background:#10b981"></span>Geran</span></div>`
+}
+
+function donutChart(){
+  const total=SDG_DATA.reduce((s,d)=>s+d.v,0);let angle=0
+  const paths=SDG_DATA.map(d=>{
+    const a=(d.v/total)*360,r1=38,r2=20,cx=50,cy=50
+    const s1=angle*(Math.PI/180),e1=(angle+a)*(Math.PI/180)
+    const [x1,y1]=[cx+r1*Math.sin(s1),cy-r1*Math.cos(s1)]
+    const [x2,y2]=[cx+r1*Math.sin(e1),cy-r1*Math.cos(e1)]
+    const [x3,y3]=[cx+r2*Math.sin(e1),cy-r2*Math.cos(e1)]
+    const [x4,y4]=[cx+r2*Math.sin(s1),cy-r2*Math.cos(s1)]
+    const lg=a>180?1:0
+    angle+=a
+    return`<path d="M${x1.toFixed(2)},${y1.toFixed(2)} A${r1},${r1} 0 ${lg},1 ${x2.toFixed(2)},${y2.toFixed(2)} L${x3.toFixed(2)},${y3.toFixed(2)} A${r2},${r2} 0 ${lg},0 ${x4.toFixed(2)},${y4.toFixed(2)} Z" fill="${d.c}" stroke="#fff" stroke-width="1.5" title="${d.n}"/>`
+  }).join('')
+  const legend=SDG_DATA.map(d=>`<div><span style="background:${d.c}"></span>${d.n.split(' - ')[0]}: ${d.v}</div>`).join('')
+  return`<div class="donut-wrap"><svg viewBox="0 0 100 100" style="width:110px;height:110px;flex-shrink:0">${paths}</svg><div class="donut-legend">${legend}</div></div>`
+}
+
+function hbarChart(){
+  const max=SDG_DATA.reduce((s,d)=>s+d.v,0)
+  return SDG_DATA.map(d=>`<div class="hbar-row"><div class="hbar-name">${d.n}</div><div class="hbar-bg"><div class="hbar-fill" style="width:${(d.v/max*100).toFixed(1)}%;background:${d.c}"></div></div><div class="hbar-val">${d.v}</div></div>`).join('')
+}
+
+// ─── Filter bar HTML ──────────────────────────────────────────────────────────
+function filterBarHtml(tabs,showSdg=true){
+  const deptOpts=DEPARTMENTS.map(d=>`<option value="${d}">${d}</option>`).join('')
+  const yearOpts=['2025','2024','2023','2022','2021','2020'].map(y=>`<option value="${y}">${y}</option>`).join('')
+  const sdgOpts=SDG_LIST.map(s=>`<option value="${s}">${s}</option>`).join('')
+  const tabHtml=(tabs||['Semua','Penyelidikan','Inovasi','IP & Komersial','Geran','Aset']).map(t=>`<button class="tab-btn ${activeTab===t?'active':''}" onclick="setTab('${t}')">${t}</button>`).join('')
+  const chips=[
+    filterYear?`<span class="chip">${filterYear}<button onclick="setFilter('year','');this.closest('.filter-bar').querySelector('[data-key=year]').value=''">×</button></span>`:'',
+    filterDept?`<span class="chip">${filterDept.replace('Jabatan ','')}<button onclick="setFilter('dept','');this.closest('.filter-bar').querySelector('[data-key=dept]').value=''">×</button></span>`:'',
+    filterSdg?`<span class="chip">${filterSdg.split(' ')[0]+' '+filterSdg.split(' ')[1]}<button onclick="setFilter('sdg','');this.closest('.filter-bar').querySelector('[data-key=sdg]').value=''">×</button></span>`:'',
+  ].join('')
+  const hasFilter=filterYear||filterDept||filterSdg
+  return`<div class="tabs-row">${tabHtml}</div>
+  <div class="filter-bar">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"/></svg>
+    <span class="filter-label">Tapis:</span>
+    <select class="filter-select" data-key="dept" onchange="setFilter('dept',this.value)"><option value="">Semua Jabatan</option>${deptOpts}</select>
+    <select class="filter-select" data-key="year" onchange="setFilter('year',this.value)"><option value="">Semua Tahun</option>${yearOpts}</select>
+    ${showSdg?`<select class="filter-select" data-key="sdg" onchange="setFilter('sdg',this.value)" style="max-width:220px"><option value="">Semua SDG</option>${sdgOpts}</select>`:''}
+    ${chips}
+    ${hasFilter?`<button class="reset-btn" onclick="resetFilters()">↩ Reset Semua</button>`:''}
+  </div>`
+}
+
+// ─── Table rows HTML ──────────────────────────────────────────────────────────
+function tableRowsHtml(rows,cols){
+  if(rows.length===0)return`<tr><td colspan="${cols}" style="text-align:center;padding:44px;color:#94a3b8;font-size:13px">Tiada rekod ditemui. Cuba ubah filter atau tab.</td></tr>`
+  return rows.map(r=>`<tr onclick='openDrawer(${JSON.stringify(JSON.stringify(r))})'>${tableRowCells(r)}</tr>`).join('')
+}
+
+function tableRowCells(r){
+  if(r.mod==='Penyelidikan'||r.mod==='Inovasi')
+    return`<td style="white-space:nowrap;font-weight:600;color:#3b82f6;font-size:11px">${r.uid}</td><td style="max-width:260px"><p>${r.title}</p></td><td style="max-width:150px"><p style="color:#64748b">${r.leader}</p></td><td>${typeBadge(r.type)}</td><td style="font-size:11px">${r.dept}</td><td style="font-size:11px">${r.year}</td><td>${statusBadge(r.status)}</td>`
+  if(r.mod==='IP & Komersial')
+    return`<td style="white-space:nowrap;font-weight:600;color:#f59e0b;font-size:11px">${r.uid}</td><td style="max-width:260px"><p>${r.title}</p></td><td style="max-width:150px"><p style="color:#64748b">${r.leader}</p></td><td style="font-size:11px">${r.ip_type||'—'}</td><td style="font-size:11px">${r.dept}</td><td style="font-size:11px">${r.year}</td><td>${statusBadge(r.status)}</td>`
+  if(r.mod==='Geran')
+    return`<td style="white-space:nowrap;font-weight:600;color:#10b981;font-size:11px">${r.uid}</td><td style="max-width:260px"><p>${r.title}</p></td><td style="max-width:150px"><p style="color:#64748b">${r.leader}</p></td><td><span class="badge badge-teal" style="font-size:10px">${r.skim||'—'}</span></td><td style="font-size:11px">${r.dept}</td><td style="font-size:11px">${r.year}</td><td>${statusBadge(r.status)}</td>`
+  return`<td style="white-space:nowrap;font-weight:600;color:#ef4444;font-size:11px">${r.uid}</td><td style="max-width:260px"><p>${r.title}</p></td><td style="max-width:150px"><p style="color:#64748b">${r.leader}</p></td><td style="font-size:10px;max-width:120px"><p style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${r.reg_no||'—'}</p></td><td style="font-size:11px">${r.dept}</td><td style="font-size:11px">${r.year}</td><td>${statusBadge(r.status)}</td>`
+}
+
+// ─── Render table section (dashboard) ────────────────────────────────────────
+function renderTableSection(){
+  const el=document.getElementById('tableSection');if(!el)return
+  const rows=getFiltered(ALL_ROWS)
+  el.innerHTML=`${filterBarHtml(['Semua','Penyelidikan','Inovasi','IP & Komersial','Geran','Aset'])}
+  <div style="overflow-x:auto"><table class="data-table">
+    <thead><tr><th>UID</th><th>Tajuk</th><th>Ketua</th><th>Jenis / Skim</th><th>Jabatan</th><th>Tahun</th><th>Status</th></tr></thead>
+    <tbody>${tableRowsHtml(rows,7)}</tbody>
+  </table></div>
+  <div class="table-footer">Menunjukkan ${rows.length} daripada ${ALL_ROWS.length} rekod</div>`
+}
+
+// ─── Module page ──────────────────────────────────────────────────────────────
+function renderModulePage(title,modKey,color,bgColor,borderColor){
+  const modRows=ALL_ROWS.filter(r=>r.mod===modKey)
+  const filtered=getFiltered(modRows)
+  const isATK=modKey==='Aset'
+  document.getElementById('pageContent').innerHTML=`
+    <div class="page-header">
+      <div class="page-icon" style="background:${bgColor}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div>
+      <div><h1>${title}</h1><p>Senarai rekod ${title.toLowerCase()} UPIK POLISAS</p></div>
+    </div>
+    <div class="mini-stats">
+      <div class="mini-stat" style="background:${bgColor};border-color:${borderColor};color:${color}"><div class="mini-stat-val">${modRows.length}</div><div class="mini-stat-lbl">Jumlah Rekod</div></div>
+      <div class="mini-stat" style="background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8"><div class="mini-stat-val">${modRows.filter(r=>r.type==='Research').length}</div><div class="mini-stat-lbl">Research</div></div>
+      <div class="mini-stat" style="background:#f5f3ff;border-color:#ddd6fe;color:#7c3aed"><div class="mini-stat-val">${modRows.filter(r=>r.type==='Innovation').length}</div><div class="mini-stat-lbl">Innovation</div></div>
+      <div class="mini-stat" style="background:#f0fdf4;border-color:#bbf7d0;color:#166534"><div class="mini-stat-val">${modRows.filter(r=>r.status==='Aktif'||r.status==='Dikomersialkan').length}</div><div class="mini-stat-lbl">Aktif</div></div>
+    </div>
+    <div class="table-card" id="tableSection">
+      ${filterBarHtml(['Semua','Research','Innovation'],!isATK)}
+      <div style="overflow-x:auto"><table class="data-table">
+        <thead><tr><th>UID</th><th>Tajuk</th><th>Ketua</th><th>${isATK?'No. Siri':modKey==='IP & Komersial'?'Jenis IP':modKey==='Geran'?'Skim':'Jenis'}</th><th>Jabatan</th><th>Tahun</th><th>Status</th></tr></thead>
+        <tbody>${tableRowsHtml(filtered,7)}</tbody>
+      </table></div>
+      <div class="table-footer">Menunjukkan ${filtered.length} daripada ${modRows.length} rekod</div>
+    </div>`
+  // Re-attach filter events for sub-pages
+  document.getElementById('tableSection').querySelectorAll('.tab-btn').forEach(b=>{
+    b.onclick=()=>{activeTab=b.textContent;renderModulePage(title,modKey,color,bgColor,borderColor)}
+  })
+}
+
+// ─── Page renderer ────────────────────────────────────────────────────────────
+function renderPage(){
+  const c=document.getElementById('pageContent')
+  if(currentPage==='dashboard'){
+    c.innerHTML=`
+      <div class="page-header">
+        <div class="page-icon" style="background:#eff6ff"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+        <div><h1>Dashboard</h1><p>Ringkasan statistik dan senarai data UPIK POLISAS</p></div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-icon" style="background:#dbeafe"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/></svg></div><div class="stat-value">1,993</div><div class="stat-label">Penyelidikan</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:#ede9fe"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></div><div class="stat-value">997</div><div class="stat-label">Inovasi</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:#fef3c7"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div><div class="stat-value">994</div><div class="stat-label">IP &amp; Komersial</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:#d1fae5"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="stat-value">992</div><div class="stat-label">Geran</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:#ffe4e6"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div><div class="stat-value">21</div><div class="stat-label">Aset Tak Ketara</div></div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-title">📊 Rekod Mengikut Jabatan</div>${barChart()}</div>
+        <div class="chart-card"><div class="chart-title">🎯 Taburan SDG</div>${donutChart()}</div>
+        <div class="chart-card"><div class="chart-title">📈 Trend Rekod Mengikut Tahun</div>${lineChart()}</div>
+        <div class="chart-card"><div class="chart-title">🌱 Bilangan Rekod SDG Teratas</div>${hbarChart()}</div>
+      </div>
+      <div class="table-card" id="tableSection"></div>`
+    renderTableSection()
+  }
+  else if(currentPage==='research') renderModulePage('Penyelidikan & Penerbitan','Penyelidikan','#3b82f6','#dbeafe','#bfdbfe')
+  else if(currentPage==='development') renderModulePage('Inovasi & Pembangunan','Inovasi','#8b5cf6','#ede9fe','#ddd6fe')
+  else if(currentPage==='ip') renderModulePage('IP & Komersial','IP & Komersial','#f59e0b','#fef3c7','#fde68a')
+  else if(currentPage==='grant') renderModulePage('Data Geran','Geran','#10b981','#d1fae5','#a7f3d0')
+  else if(currentPage==='aset') renderModulePage('Aset Tak Ketara','Aset','#ef4444','#ffe4e6','#fecdd3')
+  else {
+    c.innerHTML=`<div class="page-header"><div><h1 style="text-transform:capitalize">${currentPage}</h1><p>Halaman sedang dalam pembangunan</p></div></div>
+    <div class="table-card" style="padding:64px;text-align:center;color:#94a3b8">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 12px;display:block"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
+      <p style="font-size:13px">Kandungan halaman <strong>${currentPage}</strong> akan dipaparkan selepas sambungan Supabase dikonfigurasi.</p>
+    </div>`
+  }
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+renderPage()
+</script>
+</body>
+</html>
